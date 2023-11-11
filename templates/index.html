@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Alignment Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Image Alignment Pro</h1>
+            <div class="developer-statement">
+                &ltdeveloped by <strong>Jia</strong>&gt
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <form action="/align" method="post" enctype="multipart/form-data" id="alignForm">
+            Upload Image 1: <input type="file" name="image1" required><br><br>
+            Upload Image 2: <input type="file" name="image2" required><br><br>
+            
+<label for="method">Choose an alignment method:</label>
+<select name="method" id="method">
+    <option value="sift">SIFT</option>
+    <option value="orb">ORB</option>
+    <option value="ecc">ECC (Allow time to see changes)</option>
+    <option value="ransac">RANSAC (Affine using ORB keypoints)</option>
+</select><br><br>
+<button type="submit">Align Images</button>
+        </form>
+        <div class="image-display-area">
+            <img id="outputImage" src="" alt="Aligned Image">
+        </div>
+        <footer>
+            © 2023 Image Alignment Pro. All rights reserved.
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+
+<script>
+    document.getElementById("alignForm").addEventListener("submit", function(event){
+        event.preventDefault();
+        var form = this;
+        fetch(form.action, {
+            method: form.method,
+            body: new FormData(form)
+        }).then(response => response.blob())
+        .then(blob => {
+            var url = window.URL.createObjectURL(blob);
+            var img = document.getElementById("alignedImage");
+            img.src = url + "?" + new Date().getTime();  // Cache-busting parameter
+        });
+    });
+</script>
+
+</body>
+</html>
